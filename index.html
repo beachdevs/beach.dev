@@ -4,19 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sunset Beach Labs</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       font-weight: 300;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background: #fafafa;
+      background: #ffffff;
       color: #1a1a1a;
+      -webkit-font-smoothing: antialiased;
     }
     header {
       display: flex;
@@ -31,7 +29,12 @@
     .nav-center { display: flex; gap: 2rem; }
     .nav-center a { color: inherit; text-decoration: none; opacity: 0.7; }
     .nav-center a:hover { opacity: 1; }
-    .nav-right { opacity: 0.6; }
+    .nav-right { 
+      width: 8px;
+      height: 8px;
+      background-color: #4ade80;
+      border-radius: 50%;
+    }
     main {
       flex: 1;
       display: flex;
@@ -66,22 +69,49 @@
 </head>
 <body>
   <header>
-    <span class="nav-left">+</span>
+    <span class="nav-left"></span>
     <nav class="nav-center">
-      <a href="#">About</a>
-      <a href="#">Work</a>
-      <a href="#">Contact</a>
+      <a href="mailto:io@ssbeach.com">Contact</a>
     </nav>
-    <span class="nav-right">○</span>
+    <span class="nav-right"></span>
   </header>
   <main>
     <section class="hero">
       <h1>sunset beach</h1>
-      <p>github.com/beachdevs</p>
+      <div style="margin-top: 3rem;">
+        <h2 style="font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.5; font-weight: 400; margin-bottom: 1rem;">projects</h2>
+        <div id="repos" style="display: flex; flex-direction: column; gap: 1rem; font-size: 0.85rem; letter-spacing: 0.05em;">
+          <!-- Repos will be loaded here -->
+        </div>
+        <div style="margin-top: 2rem;">
+          <a href="https://github.com/beachdevs" style="color: inherit; text-decoration: none; font-size: 0.85rem; opacity: 0.6; letter-spacing: 0.05em;">github.com/beachdevs</a>
+        </div>
+      </div>
     </section>
   </main>
   <footer>
-    c 2026 sunset beach labs all rights reserved
+    c 2026 sunset beach inference labs all rights reserved
   </footer>
+  <script>
+    async function fetchRepos() {
+      try {
+        const response = await fetch('https://api.github.com/orgs/beachdevs/repos?sort=updated');
+        const repos = await response.json();
+        const container = document.getElementById('repos');
+        
+        container.innerHTML = repos
+          .filter(repo => repo.name !== 'ssbeach.com')
+          .map(repo => `
+            <a href="${repo.html_url}" style="color: inherit; text-decoration: none; opacity: 0.6; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;" target="_blank">
+              <span>${repo.name === 'apis' ? '⚙' : ''}</span>
+              <span>${repo.name}</span>
+            </a>
+          `).join('');
+      } catch (error) {
+        console.error('Error fetching repos:', error);
+      }
+    }
+    fetchRepos();
+  </script>
 </body>
 </html>
